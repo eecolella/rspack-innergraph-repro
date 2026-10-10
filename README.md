@@ -18,6 +18,19 @@ pnpm run build:webpack                 # compiles successfully (output in ./webp
 
 `@rspack/core` and `@rspack/cli` are pinned to 2.2.8; to try another version, change both in `package.json`.
 
-## What the project contains
+## What triggers it
 
-`src/lib/feature/index.js` re-exports two empty modules plus a factory (`export *`), `src/lib/index.js` calls the factory at module level for a value nothing imports, and `src/timeout.js` has an unused import of `react`. See the issue linked below for what is and isn't needed to trigger it.
+Reduced from a larger app, so some pieces look arbitrary. Each of these was tried on an earlier version of the project, with the same structure and different names.
+
+Needed (removing any one makes the panic go away):
+
+- the two empty modules re-exported through `export *` from `src/lib/feature/index.js`
+- the `service.js` layer and the chain of unused imports down to `src/timeout.js`
+- an unused import of an external package in `src/timeout.js` (`react` and `@microsoft/signalr` trigger it, `rxjs` and `lodash-es` do not)
+- the entry must not use `widget`'s dependencies (importing `Base` in `src/index.js` avoids it)
+
+Not needed: re-exporting through a helper barrel, exporting `widget`, what `createWidget` returns.
+
+Related: replacing `react` with a package that does not exist panics the same way in the default build, instead of reporting `Module not found`.
+
+Workaround: `optimization: { innerGraph: false }`.

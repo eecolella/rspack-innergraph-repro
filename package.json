@@ -1,0 +1,24 @@
+{
+  "name": "rspack-innergraph-repro",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "npm-run-all build:* --sequential --continue-on-error --print-name",
+    "build:rspack": "cross-env RSPACK=1 rspack",
+    "build:rspack-no-inner-graph": "cross-env RSPACK=1 NO_INNER_GRAPH=1 rspack",
+    "build:webpack": "cross-env WEBPACK=1 webpack -c ./rspack.config.mjs"
+  },
+  "dependencies": {
+    "@rspack/cli": "2.2.8",
+    "@rspack/core": "2.2.8",
+    "react": "18.2.0",
+    "webpack": "^5.106.2",
+    "webpack-cli": "^7.0.2"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "npm-run-all2": "^8.0.4"
+  },
+  "packageManager": "pnpm@10.33.2"
+}
